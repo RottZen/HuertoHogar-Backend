@@ -1,19 +1,12 @@
-package com.example.HuertoHogar_backend.controller;
+package com.example.HuertoHogar_backend.repository;
 
 import com.example.HuertoHogar_backend.model.Producto;
-import com.example.HuertoHogar_backend.service.ProductoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@RestController
-@RequestMapping("/api/productos")
-public class ProductoController {
-    
-    @Autowired
-    private ProductoService productoService;
+import java.util.List;
 
-    @PostMapping
-    public Producto crearProducto(@RequestBody Producto producto) {
-        return productoService.guardarProducto(producto);
-    }
+@Repository
+public interface ProductoRepository extends JpaRepository<Producto, String> {
+    List<Producto> findByCategoria(String categoria);
 }
