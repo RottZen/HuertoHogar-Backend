@@ -1,5 +1,6 @@
 package cl.huertohogar.usuario.controller;
 
+import cl.huertohogar.usuario.dto.AuthResponse;
 import cl.huertohogar.usuario.dto.LoginRequest;
 import cl.huertohogar.usuario.dto.RegisterRequest;
 import cl.huertohogar.usuario.dto.UsuarioResponse;
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final UsuarioService service;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public UsuarioResponse login(@Valid @RequestBody LoginRequest req) {
-        return UsuarioResponse.from(service.login(req));
+    public AuthResponse login(@Valid @RequestBody LoginRequest req) {
+        return service.login(req);
     }
 }

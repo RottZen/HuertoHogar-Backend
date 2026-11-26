@@ -16,12 +16,12 @@ public class UsuarioDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByUsername(username)
+        Usuario usuario = usuarioRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
         return User.builder()
-                .username(usuario.getName())
+                .username(usuario.getEmail())
                 .password(usuario.getPassword())
-                .roles("USER") // Puedes asignar roles según tu lógica
+                .roles(usuario.getRole().toUpperCase())
                 .build();
     }
 }

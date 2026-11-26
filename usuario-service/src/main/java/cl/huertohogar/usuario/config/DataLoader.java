@@ -42,5 +42,13 @@ public class DataLoader implements CommandLineRunner {
         cliente.setPuntos(250);
         cliente.setRole("user");
         repo.save(cliente);
+
+        Usuario vendedor = new Usuario();
+        vendedor.setName("Vendedor HuertoHogar");
+        vendedor.setEmail("vendedor@huertohogar.cl");
+        vendedor.setPassword(encoder.encode("vendedor123"));
+        vendedor.setRole("vendedor");
+        vendedor.setPuntos(0);
+        repo.save(vendedor);
     }
 }
