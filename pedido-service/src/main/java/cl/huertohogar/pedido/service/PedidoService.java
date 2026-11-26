@@ -42,8 +42,8 @@ public class PedidoService {
      * valida usuario y stock, calcula el total con los precios reales,
      * descuenta stock y suma el 10 % del total en HuertoPuntos.
      */
-    public PedidoResponse crear(CrearPedidoRequest req) {
-        usuarioClient.verificarExiste(req.usuarioId());
+    public PedidoResponse crear(CrearPedidoRequest req, String authHeader) {
+        usuarioClient.verificarExiste(req.usuarioId(), authHeader);
 
         // Si el mismo producto viene repetido, se suman las cantidades
         Map<Long, Integer> cantidades = new LinkedHashMap<>();
@@ -99,7 +99,7 @@ public class PedidoService {
 
         int puntos = total / 10;
         try {
-            usuarioClient.sumarPuntos(req.usuarioId(), puntos);
+            usuarioClient.sumarPuntos(req.usuarioId(), puntos, authHeader);
         } catch (RuntimeException ex) {
             // El pedido ya esta confirmado: no se anula por no poder sumar puntos
             log.warn("No se pudieron sumar {} puntos al usuario {}", puntos, req.usuarioId());
@@ -114,7 +114,8 @@ public class PedidoService {
     }
 
     public List<PedidoResponse> historial(Long usuarioId) {
-        return repo.findByUsuarioIdOrderByFechaPedidoDescIdDesc(usuarioId).stream()
+        List<Pedido> pedidos = (usuarioId != null) ? repo.findByUsuarioIdOrderByFechaPedidoDescIdDesc(usuarioId) : repo.findAll();
+        return pedidos.stream()
                 .map(p -> PedidoResponse.from(p, 0))
                 .toList();
     }

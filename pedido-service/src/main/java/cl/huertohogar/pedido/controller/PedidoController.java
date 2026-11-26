@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/pedidos")
+@RequestMapping("/api/v1/pedidos")
 public class PedidoController {
 
     private final PedidoService service;
@@ -23,8 +23,8 @@ public class PedidoController {
     // Confirmar pedido (Carrito.jsx)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PedidoResponse crear(@Valid @RequestBody CrearPedidoRequest req) {
-        return service.crear(req);
+    public PedidoResponse crear(@Valid @RequestBody CrearPedidoRequest req, @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        return service.crear(req, authHeader);
     }
 
     // Seguimiento (Seguimiento.jsx): GET /api/pedidos/HH-1001
@@ -35,7 +35,7 @@ public class PedidoController {
 
     // Historial de compras (Perfil.jsx): GET /api/pedidos?usuarioId=2
     @GetMapping
-    public List<PedidoResponse> historial(@RequestParam Long usuarioId) {
+    public List<PedidoResponse> historial(@RequestParam(required = false) Long usuarioId) {
         return service.historial(usuarioId);
     }
 

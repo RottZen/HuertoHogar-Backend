@@ -26,9 +26,13 @@ public class UsuarioClient {
     }
 
     /** Lanza 400 si el usuario no existe. */
-    public void verificarExiste(Long usuarioId) {
+    public void verificarExiste(Long usuarioId, String authHeader) {
         try {
-            client.get().uri("/api/usuarios/{id}", usuarioId).retrieve().toBodilessEntity();
+            var spec = client.get().uri("/api/v1/usuarios/{id}", usuarioId);
+            if (authHeader != null && !authHeader.isBlank()) {
+                spec = spec.header("Authorization", authHeader);
+            }
+            spec.retrieve().toBodilessEntity();
         } catch (HttpClientErrorException.NotFound e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario " + usuarioId + " no existe");
         } catch (RestClientException e) {
@@ -36,10 +40,13 @@ public class UsuarioClient {
         }
     }
 
-    public void sumarPuntos(Long usuarioId, int puntos) {
-        client.patch().uri("/api/usuarios/{id}/puntos", usuarioId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(new DeltaRequest(puntos))
+    public void sumarPuntos(Long usuarioId, int puntos, String authHeader) {
+        var spec = client.patch().uri("/api/v1/usuarios/{id}/puntos", usuarioId)
+                .contentType(MediaType.APPLICATION_JSON);
+        if (authHeader != null && !authHeader.isBlank()) {
+            spec = spec.header("Authorization", authHeader);
+        }
+        spec.body(new DeltaRequest(puntos))
                 .retrieve()
                 .toBodilessEntity();
     }

@@ -28,7 +28,7 @@ public class ProductoClient {
 
     public ProductoDto obtener(Long id) {
         try {
-            return client.get().uri("/api/productos/{id}", id).retrieve().body(ProductoDto.class);
+            return client.get().uri("/api/v1/productos/{id}", id).retrieve().body(ProductoDto.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El producto " + id + " no existe");
         } catch (RestClientException e) {
@@ -39,7 +39,7 @@ public class ProductoClient {
     /** delta negativo descuenta stock, positivo lo devuelve. */
     public void ajustarStock(Long id, int delta) {
         try {
-            client.patch().uri("/api/productos/{id}/stock", id)
+            client.patch().uri("/api/v1/productos/{id}/stock", id)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(new DeltaRequest(delta))
                     .retrieve()
